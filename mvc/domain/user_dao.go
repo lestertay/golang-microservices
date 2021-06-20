@@ -2,6 +2,9 @@ package domain
 
 import (
 	"fmt"
+	"net/http"
+
+	"github.com/tahkiu/golang-microservices/mvc/utils"
 )
 
 var users = map[int64]*User{
@@ -13,10 +16,14 @@ var users = map[int64]*User{
 	},
 }
 
-func GetUser(userId int64) (*User, error) {
+func GetUser(userId int64) (*User, *utils.ApiError) {
 	user := users[userId]
 	if user == nil {
-		return nil, fmt.Errorf("user %v was not found", userId)
+		return nil, &utils.ApiError{
+			Message:    fmt.Sprintf("user %d not found", userId),
+			StatusCode: http.StatusNotFound,
+			Code:       "not found",
+		}
 	}
 
 	return user, nil
